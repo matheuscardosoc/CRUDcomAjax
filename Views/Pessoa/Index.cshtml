@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "Controle de Pessoas";
+}
+
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">
+            <div>Controle de Pessoas</div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div id="divTabela">
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            carregarDados();
+        });
+
+        function carregarDados() {
+            $.ajax({
+                url: "Pessoa/GetPessoas",
+                method: "GET",
+                success: function (pessoas) {
+                    montarTabela(pessoas);
+                },
+                failure: function (e) {
+                    console.log(e);
+                }
+            });
+        }
+
+        function montarTabela(pessoas) {
+            var divTabela = document.getElementById("divTabela");
+            var tabela = '<table class="table">';
+            tabela += '<thead>';
+            tabela += '<tr>';
+            tabela += '<th>Nome</th>';
+            tabela += '<th>Email</th>';
+            tabela += '<th>Ações</th>'
+            tabela += '</tr>';
+            tabela += '</thead>';
+            tabela += '<tbody>';
+
+            for (let indice = 0; indice < pessoas.length; indice++) {
+                tabela += `<tr id="${pessoas[indice].pessoaId}">`;
+                tabela += `<td>${pessoas[indice].nome}</td>`;
+                tabela += `<td>${pessoas[indice].email}</td>`;
+                tabela += `<td><button class="btn btn-outline-info" onclick="pegarPessoaPeloId(${pessoas[indice].pessoaId})">Atualizar</button> |
+                                <button class="btn btn-outline-danger" onclick="excluirPessoa(${pessoas[indice].pessoaId})">Excluir</button></td>`;
+                tabela += '</tr>';
+            }
+
+            tabela += '</tbody>';
+            tabela += '</table>';
+
+            divTabela.innerHTML = tabela;
+        }
+    </script>
+}
